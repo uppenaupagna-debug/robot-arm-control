@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ROBOT ARM CONTROL</title>
+    <!-- Modern Tech Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="dashboard-container">
+        
+        <!-- HEADER WITH LOGO & SIMULATION BADGE -->
+        <header class="header">
+            <div class="header-main">
+                <div class="header-icon-wrapper">
+                    <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 20h16"/>
+                        <path d="M12 20v-4"/>
+                        <path d="M8 16h8"/>
+                        <circle cx="12" cy="13" r="2"/>
+                        <path d="M12 11V6"/>
+                        <circle cx="12" cy="5" r="2"/>
+                        <path d="M10 3l-2 2"/>
+                        <path d="M14 3l2 2"/>
+                    </svg>
+                </div>
+                <div class="header-text">
+                    <h1 class="title">ROBOT ARM CONTROL</h1>
+                    <p class="subtitle">4-DOF Robotic Arm &bull; Raspberry Pi + Arduino Nano</p>
+                </div>
+            </div>
+            
+            <!-- SIMULATION MODE PROMINENT BADGE -->
+            <div class="simulation-banner" aria-label="System Mode">
+                <span class="pulse-dot"></span>
+                <span class="sim-text">SIMULATION MODE ACTIVE</span>
+            </div>
+        </header>
+
+        <!-- CONNECTION & SYSTEM STATUS PANEL -->
+        <section class="status-panel" aria-label="Connection Status">
+            <div class="panel-header">
+                <span class="panel-title">SYSTEM CONNECTION STATUS</span>
+            </div>
+            <div class="status-grid">
+                <div class="status-card">
+                    <div class="status-dot dot-online"></div>
+                    <div class="status-info">
+                        <span class="status-name">Website</span>
+                        <span class="status-state state-online">Connected</span>
+                    </div>
+                </div>
+
+                <div class="status-card">
+                    <div class="status-dot dot-waiting"></div>
+                    <div class="status-info">
+                        <span class="status-name">Raspberry Pi</span>
+                        <span class="status-state state-waiting">Waiting</span>
+                    </div>
+                </div>
+
+                <div class="status-card">
+                    <div class="status-dot dot-waiting"></div>
+                    <div class="status-info">
+                        <span class="status-name">Arduino Nano</span>
+                        <span class="status-state state-waiting">Waiting</span>
+                    </div>
+                </div>
+
+                <div class="status-card">
+                    <div class="status-dot dot-waiting"></div>
+                    <div class="status-info">
+                        <span class="status-name">Servos (4x)</span>
+                        <span class="status-state state-waiting">Waiting</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SERVO CONTROLS GRID (4 JOINTS) -->
+        <main class="controls-grid" aria-label="Servo Joint Controls">
+            
+            <!-- 1. BASE SERVO -->
+            <div class="servo-card" id="card-base" data-joint="base">
+                <div class="card-header">
+                    <div class="joint-info">
+                        <span class="joint-tag">JOINT 1</span>
+                        <h2 class="joint-title">BASE</h2>
+                    </div>
+                    <div class="angle-badge">
+                        <span class="angle-val" id="base-angle">90</span><span class="angle-deg">&deg;</span>
+                    </div>
+                </div>
+
+                <div class="slider-wrapper">
+                    <div class="slider-range-labels">
+                        <span>0&deg;</span>
+                        <span>90&deg;</span>
+                        <span>180&deg;</span>
+                    </div>
+                    <input 
+                        type="range" 
+                        id="base-slider" 
+                        class="servo-slider" 
+                        min="0" 
+                        max="180" 
+                        value="90" 
+                        aria-label="Base Joint Angle (0 to 180 degrees)"
+                    >
+                </div>
+
+                <div class="step-buttons">
+                    <button type="button" class="btn-step btn-minus" data-joint="base" data-step="-5" aria-label="Decrease Base by 5 degrees">
+                        &minus;5&deg;
+                    </button>
+                    <button type="button" class="btn-step btn-plus" data-joint="base" data-step="5" aria-label="Increase Base by 5 degrees">
+                        +5&deg;
+                    </button>
+                </div>
+            </div>
+
+            <!-- 2. SHOULDER SERVO -->
+            <div class="servo-card" id="card-shoulder" data-joint="shoulder">
+                <div class="card-header">
+                    <div class="joint-info">
+                        <span class="joint-tag">JOINT 2</span>
+                        <h2 class="joint-title">SHOULDER</h2>
+                    </div>
+                    <div class="angle-badge">
+                        <span class="angle-val" id="shoulder-angle">90</span><span class="angle-deg">&deg;</span>
+                    </div>
+                </div>
+
+                <div class="slider-wrapper">
+                    <div class="slider-range-labels">
+                        <span>0&deg;</span>
+                        <span>90&deg;</span>
+                        <span>180&deg;</span>
+                    </div>
+                    <input 
+                        type="range" 
+                        id="shoulder-slider" 
+                        class="servo-slider" 
+                        min="0" 
+                        max="180" 
+                        value="90" 
+                        aria-label="Shoulder Joint Angle (0 to 180 degrees)"
+                    >
+                </div>
+
+                <div class="step-buttons">
+                    <button type="button" class="btn-step btn-minus" data-joint="shoulder" data-step="-5" aria-label="Decrease Shoulder by 5 degrees">
+                        &minus;5&deg;
+                    </button>
+                    <button type="button" class="btn-step btn-plus" data-joint="shoulder" data-step="5" aria-label="Increase Shoulder by 5 degrees">
+                        +5&deg;
+                    </button>
+                </div>
+            </div>
+
+            <!-- 3. ELBOW SERVO -->
+            <div class="servo-card" id="card-elbow" data-joint="elbow">
+                <div class="card-header">
+                    <div class="joint-info">
+                        <span class="joint-tag">JOINT 3</span>
+                        <h2 class="joint-title">ELBOW</h2>
+                    </div>
+                    <div class="angle-badge">
+                        <span class="angle-val" id="elbow-angle">90</span><span class="angle-deg">&deg;</span>
+                    </div>
+                </div>
+
+                <div class="slider-wrapper">
+                    <div class="slider-range-labels">
+                        <span>0&deg;</span>
+                        <span>90&deg;</span>
+                        <span>180&deg;</span>
+                    </div>
+                    <input 
+                        type="range" 
+                        id="elbow-slider" 
+                        class="servo-slider" 
+                        min="0" 
+                        max="180" 
+                        value="90" 
+                        aria-label="Elbow Joint Angle (0 to 180 degrees)"
+                    >
+                </div>
+
+                <div class="step-buttons">
+                    <button type="button" class="btn-step btn-minus" data-joint="elbow" data-step="-5" aria-label="Decrease Elbow by 5 degrees">
+                        &minus;5&deg;
+                    </button>
+                    <button type="button" class="btn-step btn-plus" data-joint="elbow" data-step="5" aria-label="Increase Elbow by 5 degrees">
+                        +5&deg;
+                    </button>
+                </div>
+            </div>
+
+            <!-- 4. GRIPPER SERVO -->
+            <div class="servo-card" id="card-gripper" data-joint="gripper">
+                <div class="card-header">
+                    <div class="joint-info">
+                        <span class="joint-tag">JOINT 4</span>
+                        <h2 class="joint-title">GRIPPER</h2>
+                    </div>
+                    <div class="angle-badge">
+                        <span class="angle-val" id="gripper-angle">30</span><span class="angle-deg">&deg;</span>
+                    </div>
+                </div>
+
+                <div class="slider-wrapper">
+                    <div class="slider-range-labels">
+                        <span>0&deg;</span>
+                        <span>90&deg;</span>
+                        <span>180&deg;</span>
+                    </div>
+                    <input 
+                        type="range" 
+                        id="gripper-slider" 
+                        class="servo-slider" 
+                        min="0" 
+                        max="180" 
+                        value="30" 
+                        aria-label="Gripper Joint Angle (0 to 180 degrees)"
+                    >
+                </div>
+
+                <div class="step-buttons">
+                    <button type="button" class="btn-step btn-minus" data-joint="gripper" data-step="-5" aria-label="Decrease Gripper by 5 degrees">
+                        &minus;5&deg;
+                    </button>
+                    <button type="button" class="btn-step btn-plus" data-joint="gripper" data-step="5" aria-label="Increase Gripper by 5 degrees">
+                        +5&deg;
+                    </button>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- ACTION BUTTONS: HOME, STOP, RESET -->
+        <section class="action-buttons-section" aria-label="Master Controls">
+            <div class="action-grid">
+                
+                <!-- 1. HOME BUTTON -->
+                <button type="button" id="btn-home" class="btn-action btn-home" aria-label="Reset all joints to Home position">
+                    <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    <span>HOME</span>
+                </button>
+
+                <!-- 2. EMERGENCY STOP BUTTON -->
+                <button type="button" id="btn-stop" class="btn-action btn-stop" aria-label="Emergency stop arm movement">
+                    <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="6" y="6" width="12" height="12" rx="2"></rect>
+                    </svg>
+                    <span>STOP</span>
+                </button>
+
+                <!-- 3. RESET SIMULATION BUTTON -->
+                <button type="button" id="btn-reset" class="btn-action btn-reset" aria-label="Reset Simulation">
+                    <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                    </svg>
+                    <span>RESET</span>
+                </button>
+
+            </div>
+            <p class="action-hint">Home: Base 90&deg; &bull; Shoulder 90&deg; &bull; Elbow 90&deg; &bull; Gripper 30&deg;</p>
+        </section>
+
+        <!-- COMMAND LOG / TELEMETRY TERMINAL -->
+        <section class="log-panel" aria-label="Serial Command Log">
+            <div class="log-header">
+                <div class="log-title-wrapper">
+                    <span class="log-indicator"></span>
+                    <span class="log-title">SERIAL COMMAND LOG (TERMINAL)</span>
+                </div>
+                <div class="log-actions">
+                    <span class="log-count" id="log-count">0 commands</span>
+                    <button type="button" id="btn-clear-log" class="btn-clear-log" title="Clear log">Clear</button>
+                </div>
+            </div>
+            <div class="log-window" id="log-window">
+                <div class="log-entry system-entry">
+                    <span class="log-time">[00:00:00]</span>
+                    <span class="log-tag">[SYSTEM]</span>
+                    <span class="log-msg">Simulation initialized. Ready for commands.</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <span>4-DOF Robot Arm Controller &bull; College Project Demonstration &bull; Stage 5.5 Simulation</span>
+        </footer>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
