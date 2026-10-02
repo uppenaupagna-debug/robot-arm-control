@@ -212,6 +212,44 @@ def reset_simulation():
     })
 
 
+# Predefined motion presets
+PRESETS = {
+    'home': {'base': 90, 'shoulder': 90, 'elbow': 90, 'gripper': 30},
+    'pick': {'base': 90, 'shoulder': 130, 'elbow': 50, 'gripper': 120},
+    'release': {'base': 90, 'shoulder': 130, 'elbow': 50, 'gripper': 30}
+}
+
+
+@app.route('/preset', methods=['POST'])
+def apply_preset():
+    """
+    Executes predefined arm poses: 'home', 'pick', 'release'
+    """
+    data = request.get_json(silent=True) or {}
+    preset_name = data.get('preset', '').strip().lower()
+    
+    if preset_name not in PRESETS:
+        return jsonify({'status': 'error', 'message': f'Unknown preset: "{preset_name}"'}), 400
+        
+    target = PRESETS[preset_name]
+    commands_generated = []
+    for joint in ['base', 'shoulder', 'elbow', 'gripper']:
+        angle = target[joint]
+        current_positions[joint] = angle
+        cmd = f"{JOINT_PREFIXES[joint]}{angle}"
+        commands_generated.append(cmd)
+        send_serial_command(cmd)
+        
+    return jsonify({
+        'status': 'success',
+        'preset': preset_name,
+        'positions': current_positions,
+        'commands': commands_generated,
+        'latest_command': f"{preset_name.upper()} ({' '.join(commands_generated)})",
+        'message': f'Preset "{preset_name.upper()}" applied'
+    })
+
+
 @app.route('/status', methods=['GET'])
 def get_status():
     """Returns current joint angles and system status."""
